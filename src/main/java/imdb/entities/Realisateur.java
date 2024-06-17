@@ -1,5 +1,6 @@
 package imdb.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -24,7 +25,7 @@ public class Realisateur {
     @Column(length = 255)
     private String nom;
     private String prenom;
-    private Date dateNaissance;
+    private LocalDate dateNaissance;
 
     @ManyToOne
     private Lieu lieuNaissance;
@@ -85,14 +86,14 @@ public class Realisateur {
 	/** Getter pour dateNaissance
 	 * @return the dateNaissance 
 	*/
-	public Date getDateNaissance() {
+	public LocalDate getDateNaissance() {
 		return dateNaissance;
 	}
 
 	/** Setter pour dateNaissance
 	 * @param dateNaissance
 	 */
-	public void setDateNaissance(Date dateNaissance) {
+	public void setDateNaissance(LocalDate dateNaissance) {
 		this.dateNaissance = dateNaissance;
 	}
 

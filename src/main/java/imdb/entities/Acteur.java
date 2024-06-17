@@ -1,5 +1,6 @@
 package imdb.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class Acteur {
     @Column(length = 255)
     private String nom;
     private String prenom;
-    private Date dateNaissance;
+    private LocalDate dateNaissance;
     private float taille;
     private String url;
     @ManyToOne
@@ -33,7 +34,7 @@ public class Acteur {
 
     public Acteur() {
     }
-    public Acteur(String nom, String prenom, Date dateNaissance, float taille, String url, Lieu lieuNaissance) {
+    public Acteur(String nom, String prenom, LocalDate dateNaissance, float taille, String url, Lieu lieuNaissance) {
         this.nom = nom;
         this.prenom = prenom;
         this.dateNaissance = dateNaissance;
@@ -65,11 +66,11 @@ public class Acteur {
         this.prenom = prenom;
     }
 
-    public Date getDateNaissance() {
+    public LocalDate getDateNaissance() {
         return dateNaissance;
     }
 
-    public void setDateNaissance(Date dateNaissance) {
+    public void setDateNaissance(LocalDate dateNaissance) {
         this.dateNaissance = dateNaissance;
     }
 

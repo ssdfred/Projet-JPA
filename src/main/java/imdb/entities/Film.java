@@ -1,28 +1,31 @@
 package imdb.entities;
 
-import java.util.Date;
+import java.time.Year;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.JoinColumn;
 
 @Entity
 public class Film {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    
+
     private String titre;
-    private Date anneeSortie;
+    private Year anneeSortie;
     private String langue;
+
+    @Column(columnDefinition = "TEXT", length = 500)
     private String resume;
 
     @ManyToMany
@@ -31,7 +34,7 @@ public class Film {
                inverseJoinColumns = @JoinColumn(name = "id_acteur"))
     private List<Acteur> acteurs;
 
-    @OneToMany(mappedBy="film")
+    @OneToMany(mappedBy = "film")
     private Set<Role> roles = new HashSet<>();
 
     @ManyToMany
@@ -39,22 +42,36 @@ public class Film {
                joinColumns = @JoinColumn(name = "id_film"),
                inverseJoinColumns = @JoinColumn(name = "id_realisateur"))
     private Set<Realisateur> realisateurs = new HashSet<>();
-    
+
     @ManyToMany
-    @JoinTable(name="FILM_GENRE", joinColumns = @JoinColumn(name = "id_film"), 
+    @JoinTable(name = "FILM_GENRE",
+               joinColumns = @JoinColumn(name = "id_film"),
                inverseJoinColumns = @JoinColumn(name = "id_genre"))
     private Set<Genre> genres = new HashSet<>();
-    
+
     @ManyToMany
-    @JoinTable(name="FILM_PAYS", joinColumns = @JoinColumn(name = "id_film"), 
+    @JoinTable(name = "FILM_PAYS",
+               joinColumns = @JoinColumn(name = "id_film"),
                inverseJoinColumns = @JoinColumn(name = "id_pays"))
     private Set<Pays> pays = new HashSet<>();
 
-    // Constructeurs, getters et setters
-
-    public Film() {
+    // Constructeurs
+    public Film(String titre, Year anneeSortie, String langue, String resume) {
+        this.titre = titre;
+        this.anneeSortie = anneeSortie;
+        this.langue = langue;
+        this.resume = resume;
     }
 
+ 
+
+    public Film() {
+		// TODO Auto-generated constructor stub
+	}
+
+
+
+	// Getters and Setters
     public int getId() {
         return id;
     }
@@ -71,11 +88,11 @@ public class Film {
         this.titre = titre;
     }
 
-    public Date getAnneeSortie() {
+    public Year getAnneeSortie() {
         return anneeSortie;
     }
 
-    public void setAnneeSortie(Date anneeSortie) {
+    public void setAnneeSortie(Year anneeSortie) {
         this.anneeSortie = anneeSortie;
     }
 
@@ -135,10 +152,5 @@ public class Film {
         this.pays = pays;
     }
 
-    @Override
-    public String toString() {
-        return "Film [id=" + id + ", titre=" + titre + ", anneeSortie=" + anneeSortie + ", langue=" + langue
-                + ", resume=" + resume + ", acteurs=" + acteurs + ", roles=" + roles + ", realisateurs=" + realisateurs
-                + ", genres=" + genres + ", pays=" + pays + "]";
-    }
+
 }
