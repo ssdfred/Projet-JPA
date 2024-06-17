@@ -22,6 +22,8 @@ public class Film {
     
     private String titre;
     private Date anneeSortie;
+    private String langue;
+    private String resume;
 
     @ManyToMany
     @JoinTable(name = "film_acteurs",
@@ -77,6 +79,22 @@ public class Film {
         this.anneeSortie = anneeSortie;
     }
 
+    public String getLangue() {
+        return langue;
+    }
+
+    public void setLangue(String langue) {
+        this.langue = langue;
+    }
+
+    public String getResume() {
+        return resume;
+    }
+
+    public void setResume(String resume) {
+        this.resume = resume;
+    }
+
     public List<Acteur> getActeurs() {
         return acteurs;
     }
@@ -119,24 +137,8 @@ public class Film {
 
     @Override
     public String toString() {
-        return "Film [id=" + id + ", titre=" + titre + ", anneeSortie=" + anneeSortie + ", acteurs=" + acteurs
-                + ", roles=" + roles + ", realisateurs=" + realisateurs + ", genres=" + genres + ", pays=" + pays + "]";
+        return "Film [id=" + id + ", titre=" + titre + ", anneeSortie=" + anneeSortie + ", langue=" + langue
+                + ", resume=" + resume + ", acteurs=" + acteurs + ", roles=" + roles + ", realisateurs=" + realisateurs
+                + ", genres=" + genres + ", pays=" + pays + "]";
     }
-
-	public void save(Film film) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setLangue(String trim) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setResume(String trim) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 }

@@ -1,43 +1,47 @@
 package imdb;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 import com.opencsv.exceptions.CsvValidationException;
 
-import imdb.Dao.ActeurDAOImpl;
-import imdb.Dao.ActeurDao;
 import imdb.Dao.FilmDAOImpl;
 import imdb.Dao.FilmDao;
-import imdb.Utils.CsvParser;
-import imdb.entities.Acteur;
+import imdb.Utils.Reader;
 import imdb.entities.Film;
-
+import imdb.exception.ExceptionTech;
 
 public class Menu {
     private static final Scanner scanner = new Scanner(System.in);
 
     private FilmDao filmDAO;
-    private ActeurDao acteurDAO;
-    private CsvParser csvParser;
+    private Reader reader;
 
     public Menu() {
         filmDAO = new FilmDAOImpl();
-        acteurDAO = new ActeurDao();
-        csvParser = new CsvParser();
+        reader = new Reader();
     }
 
     public static void main(String[] args) throws IOException, CsvValidationException {
-
+    	
         Menu menu = new Menu();
         menu.run();
     }
 
     public void run() throws IOException, CsvValidationException {
-        csvParser.parseAndInsert();
-
+    	
+        List<Film> films = new ArrayList<>();
+		try {
+			films = Reader.getFilms("E:\\CDA Curs\\java\\Projet-JPA\\src\\main\\resources\\Csv\\films.csv");
+		} catch (ExceptionTech e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        filmDAO.saveAll(films);
+       
         while (true) {
             afficherMenu();
             int choix = Integer.parseInt(scanner.nextLine());
@@ -89,8 +93,8 @@ public class Menu {
     private void afficherCastingFilm() {
         System.out.println("Entrez le titre du film :");
         String titreFilm = scanner.nextLine();
-        List<Acteur> acteurs = acteurDAO.findByFilmTitre(titreFilm);
-        acteurs.forEach(acteur -> System.out.println(acteur.getNom() + " " + acteur.getPrenom()));
+        List<String> acteurs = filmDAO.findActeursByFilm(titreFilm);
+        acteurs.forEach(acteur -> System.out.println(acteur));
     }
 
     private void afficherFilmsEntreAnnees() {
@@ -104,24 +108,20 @@ public class Menu {
 
     private void afficherFilmsCommunsActeurs() {
         System.out.println("Entrez le nom du premier acteur :");
-        String nomActeur1 = scanner.nextLine();
+        String acteur1 = scanner.nextLine();
         System.out.println("Entrez le nom du second acteur :");
-        String nomActeur2 = scanner.nextLine();
-        List<Film> films1 = filmDAO.findByActeur(nomActeur1);
-        List<Film> films2 = filmDAO.findByActeur(nomActeur2);
-        films1.retainAll(films2);
-        films1.forEach(film -> System.out.println(film.getTitre()));
+        String acteur2 = scanner.nextLine();
+        List<Film> films = filmDAO.findFilmsCommunsActeurs(acteur1, acteur2);
+        films.forEach(film -> System.out.println(film.getTitre()));
     }
 
     private void afficherActeursCommunsFilms() {
         System.out.println("Entrez le titre du premier film :");
-        String titreFilm1 = scanner.nextLine();
+        String film1 = scanner.nextLine();
         System.out.println("Entrez le titre du second film :");
-        String titreFilm2 = scanner.nextLine();
-        List<Acteur> acteurs1 = acteurDAO.findByFilmTitre(titreFilm1);
-        List<Acteur> acteurs2 = acteurDAO.findByFilmTitre(titreFilm2);
-        acteurs1.retainAll(acteurs2);
-        acteurs1.forEach(acteur -> System.out.println(acteur.getNom() + " " + acteur.getPrenom()));
+        String film2 = scanner.nextLine();
+        List<String> acteurs = filmDAO.findActeursCommunsFilms(film1, film2);
+        acteurs.forEach(acteur -> System.out.println(acteur));
     }
 
     private void afficherFilmsEntreAnneesAvecActeur() {
@@ -131,8 +131,7 @@ public class Menu {
         int anneeFin = Integer.parseInt(scanner.nextLine());
         System.out.println("Entrez le nom de l'acteur :");
         String nomActeur = scanner.nextLine();
-        List<Film> films = filmDAO.findAnneeSortieBeetween(anneeDebut, anneeFin);
-        films = films.stream().filter(film -> film.getActeurs().stream().anyMatch(acteur -> acteur.getNom().equals(nomActeur))).collect(Collectors.toList());
+        List<Film> films = filmDAO.findFilmsEntreAnneesAvecActeur(anneeDebut, anneeFin, nomActeur);
         films.forEach(film -> System.out.println(film.getTitre()));
     }
 }

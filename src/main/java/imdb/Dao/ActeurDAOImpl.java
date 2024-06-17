@@ -8,11 +8,10 @@ import jakarta.persistence.Persistence;
 
 import imdb.entities.Acteur;
 
-public class ActeurDAOImpl implements ActeurDao {
+public class ActeurDAOImpl  {
 
 	 private EntityManagerFactory emf = Persistence.createEntityManagerFactory("IMDB");
 
-	    @Override
 	    public void save(Acteur acteur) {
 	        EntityManager em = emf.createEntityManager();
 	        em.getTransaction().begin();
@@ -21,7 +20,7 @@ public class ActeurDAOImpl implements ActeurDao {
 	        em.close();
 	    }
 
-	    @Override
+	   
 	    public Acteur findById(int id) {
 	        EntityManager em = emf.createEntityManager();
 	        Acteur acteur = em.find(Acteur.class, id);
@@ -29,7 +28,7 @@ public class ActeurDAOImpl implements ActeurDao {
 	        return acteur;
 	    }
 
-	    @Override
+	    
 	    public List<Acteur> findAll() {
 	        EntityManager em = emf.createEntityManager();
 	        List<Acteur> acteurs = em.createQuery("SELECT a FROM Acteur a", Acteur.class).getResultList();
@@ -37,7 +36,7 @@ public class ActeurDAOImpl implements ActeurDao {
 	        return acteurs;
 	    }
 
-	    @Override
+	    
 	    public List<Acteur> findByFilmTitre(String titreFilm) {
 	        EntityManager em = emf.createEntityManager();
 	        List<Acteur> acteurs = em.createQuery("SELECT a FROM Acteur a JOIN a.films f WHERE f.titre = :titreFilm", Acteur.class)
@@ -47,7 +46,7 @@ public class ActeurDAOImpl implements ActeurDao {
 	        return acteurs;
 	    }
 
-	    @Override
+	    
 	    public void deleteById(int id) {
 	        EntityManager em = emf.createEntityManager();
 	        em.getTransaction().begin();

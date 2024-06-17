@@ -53,7 +53,7 @@ public class ActeurDao {
         em.getTransaction().commit();
     }
 
-    // Ajoutez d'autres méthodes selon vos besoins (findByDateNaissance, findByLieuNaissance, etc.)
+  
 
     public void closeEntityManager() {
         em.close();
