@@ -48,10 +48,10 @@ public class Menu {
 		// Charger les films depuis le fichier CSV en utilisant Reader
         try {
             List<Film> films = reader.getFilms("src/main/resources/Csv/films.csv");
-            List<Acteur> acteurs = reader.getActeurs("src/main/resources/Csv/acteurs.csv");
-            List<Realisateur> realisateurs = reader.getRealisateurs("src/main/resources/Csv/realisateurs.csv");
+         //   List<Acteur> acteurs = reader.getActeurs("src/main/resources/Csv/acteurs.csv");
+           // List<Realisateur> realisateurs = reader.getRealisateurs("src/main/resources/Csv/realisateurs.csv");
 
-            for (Film film : films) {
+    /*        for (Film film : films) {
                 for (Acteur acteur : acteurs) {
                     if (!film.getActeurs().contains(acteur)) {
                         film.getActeurs().add(acteur);
@@ -63,8 +63,8 @@ public class Menu {
                     }
                 }
             }
-
-            // Sauvegarder les entités en utilisant votre DAO de films
+*/
+            // Sauvegarder les entités en utilisant DAO de films
             filmDAO.save(films);
         } catch (ExceptionTech e) {
             LOGGER.severe("Erreur technique : " + e.getMessage());

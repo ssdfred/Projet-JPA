@@ -10,7 +10,7 @@ import jakarta.persistence.Persistence;
 
 public class FilmDatabaseInserter {
 
-    public static void main(String[] args) {
+    public void main(String[] args) {
 
         EntityManagerFactory emf= Persistence.createEntityManagerFactory("IMDB");
         EntityManager em = emf.createEntityManager();

@@ -21,7 +21,7 @@ import imdb.exception.ExceptionTech;
 public class Reader {
 
 
-	    public static List<Film> getFilms(String csvFile) {
+	    public static  List<Film> getFilms(String csvFile) {
 	        List<String> lignes = null;
 	        try {
 	            lignes = FileUtils.readLines(new File(csvFile), "UTF-8");
@@ -78,7 +78,7 @@ public class Reader {
 	    }
 	
 
-	public List<Acteur> getActeurs(String filePath) throws IOException, CsvValidationException {
+/*	public List<Acteur> getActeurs(String filePath) throws IOException, CsvValidationException {
         List<Acteur> acteurs = new ArrayList<>();
 
         try (CSVReader csvReader = new CSVReader(new FileReader(filePath))) {
@@ -99,7 +99,7 @@ public class Reader {
     }
     
 
-    // Méthodes similaires pour Realisateur, Genre, Pays, etc.
+   
     
     public List<Realisateur> getRealisateurs(String filePath) throws IOException, CsvValidationException {
         List<Realisateur> realisateurs = new ArrayList<>();
@@ -119,5 +119,5 @@ public class Reader {
         }
 
         return realisateurs;
-    }
+    }*/
 }
