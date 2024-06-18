@@ -1,12 +1,15 @@
 package imdb.entities;
 
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,7 +22,7 @@ import jakarta.persistence.OneToMany;
 public class Film {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     private String titre;
     private Year anneeSortie;
@@ -28,14 +31,12 @@ public class Film {
     @Column(columnDefinition = "TEXT", length = 500)
     private String resume;
 
-    @ManyToMany
-    @JoinTable(name = "film_acteurs",
-               joinColumns = @JoinColumn(name = "id_film"),
-               inverseJoinColumns = @JoinColumn(name = "id_acteur"))
+    @ManyToMany(mappedBy = "films", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<Acteur> acteurs;
 
-    @OneToMany(mappedBy = "film")
-    private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "film", cascade = CascadeType.ALL)
+    private List<Role> roles = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "film_realisateurs",
@@ -71,14 +72,7 @@ public class Film {
 
 
 
-	// Getters and Setters
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getTitre() {
         return titre;
@@ -120,13 +114,7 @@ public class Film {
         this.acteurs = acteurs;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
+ 
 
     public Set<Realisateur> getRealisateurs() {
         return realisateurs;
@@ -151,6 +139,42 @@ public class Film {
     public void setPays(Set<Pays> pays) {
         this.pays = pays;
     }
+
+
+
+	/** Getter pour id
+	 * @return the id 
+	*/
+	public Integer getId() {
+		return id;
+	}
+
+
+
+	/** Setter pour id
+	 * @param id
+	 */
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+
+
+	/** Getter pour roles
+	 * @return the roles 
+	*/
+	public List<Role> getRoles() {
+		return roles;
+	}
+
+
+
+	/** Setter pour roles
+	 * @param roles
+	 */
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
 
 
 }

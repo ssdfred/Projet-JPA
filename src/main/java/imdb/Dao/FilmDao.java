@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface FilmDao {
     void save(List<Film> films);
+    public Film findById(int id);
     List<Film> findByActeur(String nom);
     List<String> findActeursByFilm(String titre);
     List<Film> findFilmsEntreAnnees(int anneeDebut, int anneeFin);

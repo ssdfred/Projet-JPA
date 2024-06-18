@@ -9,7 +9,7 @@
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>mylog.log</file>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n%exception{full}</pattern>
         </encoder>
     </appender>
 
@@ -17,5 +17,7 @@
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>
+
+    <conversionRule conversionWord="ex" converterClass="com.example.logging.CustomThrowableProxyConverter" />
 
 </configuration>

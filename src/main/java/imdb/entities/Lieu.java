@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 public class Lieu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     
     @Column(length = 255)
     private String pays;
@@ -20,11 +20,11 @@ public class Lieu {
     private String ville;
 
     // Getters and setters
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

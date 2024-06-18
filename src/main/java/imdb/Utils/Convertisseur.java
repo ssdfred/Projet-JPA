@@ -37,4 +37,20 @@ public class Convertisseur {
 		}
 		return null;
 	}
+	/**
+	 * @param value
+	 * @return
+	 */
+	
+
+	public static Float toFloatSafely(String value) {
+	    if (NumberUtils.isCreatable(value)) {
+	        try {
+	            return Float.parseFloat(value);
+	        } catch (NumberFormatException e) {
+	            System.out.println("La valeur '" + value + "' n'est pas un nombre valide.");
+	        }
+	    }
+		return null;
+	}
 }

@@ -1,5 +1,6 @@
 package imdb.Dao;
 
+import imdb.entities.Acteur;
 import imdb.entities.Film;
 
 import jakarta.persistence.EntityManager;
@@ -26,7 +27,13 @@ public class FilmDAOImpl implements FilmDao {
         }
         em.getTransaction().commit();
     }
-
+    @Override
+    public Film findById(int id) {
+        EntityManager em = emf.createEntityManager();
+        Film film = em.find(Film.class, id);
+        em.close();
+        return film;
+    }
     @Override
     public List<Film> findByActeur(String nom) {
         return em.createQuery("SELECT f FROM Film f JOIN f.acteurs a WHERE a.nom = :nom", Film.class)
@@ -67,13 +74,12 @@ public class FilmDAOImpl implements FilmDao {
 
     @Override
     public List<Film> findFilmsEntreAnneesAvecActeur(int anneeDebut, int anneeFin, String nomActeur) {
-        return em.createQuery("SELECT f FROM Film f JOIN f.acteurs a WHERE f.anneeSortie BETWEEN :anneeDebut AND :anneeFin AND a.nom = :nomActeur", Film.class)
+        return em.createQuery("SELECT DISTINCT f FROM Film f JOIN f.acteurs a WHERE f.anneeSortie BETWEEN :anneeDebut AND :anneeFin AND a.nom = :nomActeur", Film.class)
                 .setParameter("anneeDebut", anneeDebut)
                 .setParameter("anneeFin", anneeFin)
                 .setParameter("nomActeur", nomActeur)
                 .getResultList();
     }
-
     @Override
     public void update(Film film) {
         em.getTransaction().begin();
