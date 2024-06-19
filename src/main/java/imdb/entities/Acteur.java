@@ -34,7 +34,7 @@ public class Acteur {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "lieuNaissance_id")
 	private Lieu lieuNaissance;
-    @OneToMany(mappedBy = "acteur", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "acteur", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Role> roles = new ArrayList<>();
 	@ManyToMany(mappedBy = "acteurs", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private List<Film> films;
@@ -45,6 +45,15 @@ public class Acteur {
 	public Acteur() {
 	}
 
+	  public void addRole(Role role) {
+	        roles.add(role);
+	        role.setActeur(this);
+	    }
+
+	    public void removeRole(Role role) {
+	        roles.remove(role);
+	        role.setActeur(null);
+	    }
 	public Acteur(String nom, String prenom, LocalDate dateNaissance, float taille, String url, Lieu lieuNaissance) {
 		this.nom = nom;
 		this.prenom = prenom;

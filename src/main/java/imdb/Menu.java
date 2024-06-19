@@ -18,6 +18,8 @@ import imdb.Dao.LieuDao;
 import imdb.Dao.LieuDaoImpl;
 import imdb.Dao.RealisateurDao;
 import imdb.Dao.RealisateurDaoImpl;
+import imdb.Dao.RoleDao;
+import imdb.Dao.RoleDaoImpl;
 import imdb.Utils.Reader;
 import imdb.entities.Acteur;
 import imdb.entities.Film;
@@ -33,12 +35,14 @@ public class Menu {
 	private FilmDao filmDAO;
 	private ActeurDao acteurDao;
 	private RealisateurDao realisateurDao;
+	private RoleDao roleDao;
 	private Reader reader;
 
 	public Menu() {
 		filmDAO = new FilmDAOImpl();
 		acteurDao = new ActeurDAOImpl();
 		realisateurDao = new RealisateurDaoImpl();
+		roleDao = new RoleDaoImpl();
 		reader = new Reader();
 	}
 
@@ -60,13 +64,13 @@ public class Menu {
 
 		// Charger les films depuis le fichier CSV en utilisant Reader
 		try {
-			List<Film> films = reader.getFilms("src/main/resources/Csv/films.csv");
-			List<Acteur> acteurs = Reader.getActeursDuFilm("src/main/resources/Csv/acteurs.csv");
+			//List<Film> films = reader.getFilms("src/main/resources/Csv/films.csv");
+			List<Acteur> acteurs = reader.getActeursDuFilm("src/main/resources/Csv/acteurs.csv");
 			//List<Lieu> lieus = reader.getLieux("src/main/resources/Csv/pays.csv");
 			List<Role> roles = reader.getRoles("src/main/resources/Csv/roles.csv");
 			List<Realisateur> realisateurs = reader.getRealisateurs("src/main/resources/Csv/realisateurs.csv");
 			// Associer les acteurs aux films
-			for (Film film : films) {
+			/*for (Film film : films) {
 				for (Acteur acteur : acteurs) {
 					// Vérifier si l'acteur appartient au film
 					if (acteur.getFilms() != null && acteur.getFilms().contains(film)) {
@@ -78,11 +82,12 @@ public class Menu {
 						acteur.getFilms().add(film);
 					}
 				}
-			}
+			}*/
 			// Sauvegarder les entités en utilisant DAO de films
-			filmDAO.save(films);
+			//filmDAO.save(films);
 			acteurDao.save(acteurs);
 			realisateurDao.save(realisateurs);
+			roleDao.save(roles);
 		} catch (ExceptionTech e) {
 			LOGGER.severe("Erreur technique : " + e.getMessage());
 			throw e;

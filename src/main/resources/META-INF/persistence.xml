@@ -1,27 +1,25 @@
 <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
-	version="2.2">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
+    version="2.2">
 
-	<persistence-unit name="IMDB" transaction-type="RESOURCE_LOCAL">
-		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-		<class>imdb.entities.Film</class>
-		<class>imdb.entities.Genre</class>
-		<class>imdb.entities.Pays</class>
-		<class>imdb.entities.Lieu</class>
-		<class>imdb.entities.Realisateur</class>
-		<class>imdb.entities.Acteur</class>
-		<class>imdb.entities.Role</class>
+    <persistence-unit name="IMDB" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <class>imdb.entities.Film</class>
+        <class>imdb.entities.Genre</class>
+        <class>imdb.entities.Pays</class>
+        <class>imdb.entities.Lieu</class>
+        <class>imdb.entities.Realisateur</class>
+        <class>imdb.entities.Acteur</class>
+        <class>imdb.entities.Role</class>
 
-
-		<properties>
-			<property name="jakarta.persistence.jdbc.url"
-				value="jdbc:mysql://localhost:3307/imdb" />
-			<property name="jakarta.persistence.jdbc.user" value="root" />
-			<property name="jakarta.persistence.jdbc.password" value="root" />
-			<property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.hbm2ddl.auto" value="drop-and-create" />
-
-		</properties>
-	</persistence-unit>
+        <properties>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3307/imdb" />
+            <property name="jakarta.persistence.jdbc.user" value="root" />
+            <property name="jakarta.persistence.jdbc.password" value="root" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.hbm2ddl.auto" value="drop-and-create" />
+        </properties>
+    </persistence-unit>
 </persistence>

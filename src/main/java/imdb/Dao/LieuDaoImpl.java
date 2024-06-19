@@ -19,7 +19,7 @@ public class LieuDaoImpl implements LieuDao {
 	
     @Override
     public void save(Lieu lieu) {
-        EntityManager em = emf.createEntityManager();
+        em = emf.createEntityManager();
         em.getTransaction().begin();
         try {
             em.persist(lieu);
@@ -36,7 +36,7 @@ public class LieuDaoImpl implements LieuDao {
 
     @Override
     public void save(List<Lieu> lieus) {
-        EntityManager em = emf.createEntityManager();
+        em = emf.createEntityManager();
         em.getTransaction().begin();
         try {
             for (Lieu lieu : lieus) {

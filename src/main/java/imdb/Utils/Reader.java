@@ -31,7 +31,7 @@ import imdb.exception.ExceptionTech;
 public class Reader {
 
 	private static ActeurDAOImpl acteurDao = new ActeurDAOImpl();
-	
+	/*
 	public List<Film> getFilms(String csvFile) {
 	    List<String> lignes = null;
 	    try {
@@ -65,7 +65,7 @@ public class Reader {
 	}
 
 
-
+*/
 	public List<Role> getRoles(String csvFile) {
 	    RoleDao roleDao = new RoleDaoImpl();
 	    List<Role> roles = new ArrayList<>();
@@ -76,7 +76,7 @@ public class Reader {
 
 	        // Exemple d'ajout des rôles à la base de données
 	        for (Role role : rolesFromCsv) {
-	            roleDao.save(role);
+	            roleDao.save((List<Role>) role);
 	            roles.add(role); // Ajouter le rôle à la liste des rôles sauvegardés
 	        }
 
@@ -143,6 +143,7 @@ public class Reader {
 	    }
 
 	}
+	/*
 	public static Film transformeLigneEnFilm(String ligneCsv) {
 		String[] morceaux = ligneCsv.split(";", -1);
 
@@ -183,7 +184,7 @@ public class Reader {
 
 		return film;
 	}
-
+*/
 	public static List<Acteur> getActeursDuFilm(String ligne) {
 	    List<Acteur> acteurs = new ArrayList<>();
 	    

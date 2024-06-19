@@ -14,14 +14,15 @@ import imdb.entities.Film;
 
 public class ActeurDAOImpl implements ActeurDao {
 
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("IMDB");
+	private EntityManagerFactory emf = Persistence.createEntityManagerFactory("IMDB");
+	private EntityManager em;
 	private static final Logger logger = LoggerFactory.getLogger(ActeurDAOImpl.class);
  
 
 
     @Override
     public Acteur findById(int id) {
-        EntityManager em = emf.createEntityManager();
+        em = emf.createEntityManager();
         Acteur acteur = em.find(Acteur.class, id);
         em.close();
         return acteur;
@@ -29,7 +30,7 @@ public class ActeurDAOImpl implements ActeurDao {
 
     @Override
     public List<Acteur> findAll() {
-        EntityManager em = emf.createEntityManager();
+        em = emf.createEntityManager();
         List<Acteur> acteurs = em.createQuery("SELECT a FROM Acteur a", Acteur.class).getResultList();
         em.close();
         return acteurs;
@@ -39,7 +40,7 @@ public class ActeurDAOImpl implements ActeurDao {
 
     @Override
     public List<Acteur> findByNom(String nom) {
-        EntityManager em = emf.createEntityManager();
+        em = emf.createEntityManager();
         List<Acteur> acteurs = em.createQuery("SELECT a FROM Acteur a WHERE a.nom = :nom", Acteur.class)
                 .setParameter("nom", nom)
                 .getResultList();
@@ -49,7 +50,7 @@ public class ActeurDAOImpl implements ActeurDao {
 
     @Override
     public void update(Acteur acteur) {
-        EntityManager em = emf.createEntityManager();
+        em = emf.createEntityManager();
         em.getTransaction().begin();
         em.merge(acteur);
         em.getTransaction().commit();
@@ -63,7 +64,7 @@ public class ActeurDAOImpl implements ActeurDao {
 
     @Override
     public void delete(Acteur acteur) {
-        EntityManager em = emf.createEntityManager();
+        em = emf.createEntityManager();
         em.getTransaction().begin();
         em.remove(em.contains(acteur) ? acteur : em.merge(acteur));
         em.getTransaction().commit();
@@ -72,7 +73,7 @@ public class ActeurDAOImpl implements ActeurDao {
 
     @Override
     public void save(List<Acteur> acteurs) {
-        EntityManager em = emf.createEntityManager();
+        em = emf.createEntityManager();
         em.getTransaction().begin();
         try {
             for (Acteur acteur : acteurs) {
@@ -93,7 +94,7 @@ public class ActeurDAOImpl implements ActeurDao {
 
 	@Override
 	public Acteur findOrCreateActeur(String nomComplet) {
-	    EntityManager em = emf.createEntityManager();
+	    em = emf.createEntityManager();
 	    Acteur acteur = null;
 	    try {
 	        em.getTransaction().begin();

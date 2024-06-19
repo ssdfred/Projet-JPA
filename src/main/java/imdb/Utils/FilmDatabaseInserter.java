@@ -18,11 +18,11 @@ public class FilmDatabaseInserter {
         //Récupérer les films à partir du fichier CSV
         String csvFile = "E:\\CDA Curs\\java\\Projet-JPA\\src\\main\\resources\\Csv\\films.csv"; 
         List<Film> films = null;
-        try {
-            films = Reader.getFilms(csvFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+       // try {
+       //     films = Reader.getFilms(csvFile);
+      //  } catch (Exception e) {
+      //      e.printStackTrace();
+      //  }
 
         //Insérer les films dans la base de données
         insertFilmsIntoDatabase(films, em);

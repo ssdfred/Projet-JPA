@@ -6,7 +6,7 @@ import imdb.entities.Role;
 
 public interface RoleDao {
     
-    void save(Role role);
+    void save(List<Role> roles);
     
     Role findById(int id);
     
@@ -16,4 +16,5 @@ public interface RoleDao {
     
     void delete(Role role);
     public void closeEntityManager();
+
 }

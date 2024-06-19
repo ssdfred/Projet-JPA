@@ -9,12 +9,12 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 
 public class RoleDaoImpl implements RoleDao {
-
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("IMDB");
+	private EntityManagerFactory emf = Persistence.createEntityManagerFactory("IMDB");
+	private EntityManager em;
 
 	@Override
-	public void save(Role role) {
-		 EntityManager em = emf.createEntityManager();
+	public void save(List<Role> role) {
+		 em = emf.createEntityManager();
 	        em.getTransaction().begin();
 	        try {
 	            em.persist(role);
@@ -31,7 +31,7 @@ public class RoleDaoImpl implements RoleDao {
 
 	@Override
 	public Role findById(int id) {
-		   EntityManager em = emf.createEntityManager();
+		    em = emf.createEntityManager();
 	        Role role = em.find(Role.class, id);
 	        em.close();
 	        return role;
@@ -39,7 +39,7 @@ public class RoleDaoImpl implements RoleDao {
 
 	@Override
 	public List<Role> findAll() {
-		 EntityManager em = emf.createEntityManager();
+		  	em = emf.createEntityManager();
 	        TypedQuery<Role> query = em.createQuery("SELECT r FROM Role r", Role.class);
 	        List<Role> roles = query.getResultList();
 	        em.close();
@@ -48,7 +48,7 @@ public class RoleDaoImpl implements RoleDao {
 
 	@Override
 	public void update(Role role) {
-		 EntityManager em = emf.createEntityManager();
+		 em = emf.createEntityManager();
 	        em.getTransaction().begin();
 	        try {
 	            em.merge(role);
@@ -65,7 +65,7 @@ public class RoleDaoImpl implements RoleDao {
 
 	@Override
 	public void delete(Role role) {
-		 EntityManager em = emf.createEntityManager();
+		 em = emf.createEntityManager();
 	        em.getTransaction().begin();
 	        try {
 	            em.remove(em.contains(role) ? role : em.merge(role));
