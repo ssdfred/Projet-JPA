@@ -62,15 +62,16 @@ public class Menu {
 
 	public void run() throws IOException, CsvValidationException {
 
-		// Charger les films depuis le fichier CSV en utilisant Reader
+		// Charger les entités depuis le fichier CSV en utilisant Reader
 		try {
-			//List<Film> films = reader.getFilms("src/main/resources/Csv/films.csv");
+			List<Film> films = reader.getFilms("src/main/resources/Csv/films.csv");
 			List<Acteur> acteurs = reader.getActeursDuFilm("src/main/resources/Csv/acteurs.csv");
 			//List<Lieu> lieus = reader.getLieux("src/main/resources/Csv/pays.csv");
 			List<Role> roles = reader.getRoles("src/main/resources/Csv/roles.csv");
 			List<Realisateur> realisateurs = reader.getRealisateurs("src/main/resources/Csv/realisateurs.csv");
+			//List<Genre> genres =reader.1
 			// Associer les acteurs aux films
-			/*for (Film film : films) {
+			for (Film film : films) {
 				for (Acteur acteur : acteurs) {
 					// Vérifier si l'acteur appartient au film
 					if (acteur.getFilms() != null && acteur.getFilms().contains(film)) {
@@ -82,9 +83,9 @@ public class Menu {
 						acteur.getFilms().add(film);
 					}
 				}
-			}*/
-			// Sauvegarder les entités en utilisant DAO de films
-			//filmDAO.save(films);
+			}
+			//Sauvegarder les entités en utilisant DAO de films
+			filmDAO.save(films);
 			acteurDao.save(acteurs);
 			realisateurDao.save(realisateurs);
 			roleDao.save(roles);

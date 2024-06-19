@@ -15,5 +15,7 @@ public interface FilmDao {
     List<Film> findFilmsEntreAnneesAvecActeur(int anneeDebut, int anneeFin, String nomActeur);
     void update(Film film);
     void delete(Film film);
+    Film find(String idImdb);
     void closeEntityManager();
+
 }

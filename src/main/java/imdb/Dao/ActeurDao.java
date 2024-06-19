@@ -18,13 +18,15 @@ public interface ActeurDao {
     public List<Acteur> findByNom(String nom);
 
     public List<Acteur> findAll();
-
+    public Acteur find(String idImdb);
     public void update(Acteur acteur) ;
 
     public void delete(Acteur acteur);
+    void close();
 
-  
+    Acteur findByNomAndPrenom(String nom, String prenom);
 
     public void closeEntityManager();
-	Acteur findOrCreateActeur(String nom, String prenom);
+
+
 }

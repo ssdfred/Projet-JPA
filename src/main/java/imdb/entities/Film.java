@@ -23,7 +23,7 @@ public class Film {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
+    private String idImdb;
     private String titre;
     private Year anneeSortie;
     private String langue;
@@ -31,7 +31,10 @@ public class Film {
     @Column(columnDefinition = "TEXT", length = 500)
     private String resume;
 
-    @ManyToMany(mappedBy = "films", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany
+    @JoinTable(name = "film_acteurs",
+               joinColumns = @JoinColumn(name = "id_film"),
+               inverseJoinColumns = @JoinColumn(name = "id_acteur"))
     private List<Acteur> acteurs;
 
 
@@ -72,12 +75,13 @@ public class Film {
 
     public void addRole(Role role) {
         roles.add(role);
-        role.setFilm(this);
+        
+        this.titre=this.titre+role.getNom();
     }
 
     public void removeRole(Role role) {
         roles.remove(role);
-        role.setFilm(null);
+        this.titre=this.titre+role.getNom();
     }
 
 
@@ -182,6 +186,24 @@ public class Film {
 	 */
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
+	}
+
+
+
+	/** Getter pour idImdb
+	 * @return the idImdb 
+	*/
+	public String getIdImdb() {
+		return idImdb;
+	}
+
+
+
+	/** Setter pour idImdb
+	 * @param idImdb
+	 */
+	public void setIdImdb(String idImdb) {
+		this.idImdb = idImdb;
 	}
 
 

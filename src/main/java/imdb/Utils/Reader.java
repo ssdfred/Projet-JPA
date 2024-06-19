@@ -18,6 +18,9 @@ import org.hibernate.Hibernate;
 import org.hibernate.grammars.hql.HqlParser.CurrentDateFunctionContext;
 
 import imdb.Dao.ActeurDAOImpl;
+import imdb.Dao.ActeurDao;
+import imdb.Dao.FilmDAOImpl;
+import imdb.Dao.FilmDao;
 import imdb.Dao.LieuDaoImpl;
 import imdb.Dao.RoleDao;
 import imdb.Dao.RoleDaoImpl;
@@ -27,11 +30,12 @@ import imdb.entities.Lieu;
 import imdb.entities.Realisateur;
 import imdb.entities.Role;
 import imdb.exception.ExceptionTech;
+import jakarta.persistence.EntityManager;
 
 public class Reader {
 
 	private static ActeurDAOImpl acteurDao = new ActeurDAOImpl();
-	/*
+
 	public List<Film> getFilms(String csvFile) {
 	    List<String> lignes = null;
 	    try {
@@ -47,17 +51,17 @@ public class Reader {
 	    lignes.forEach(ligne -> {
 	        Film film = transformeLigneEnFilm(ligne);
 	        if (film != null) {
-	            List<Acteur> acteurs = getActeursDuFilm(ligne); // Récupérer les acteurs du film
+	           // List<Acteur> acteurs = getActeursDuFilm(ligne); // Récupérer les acteurs du film
 
 	            // Charger explicitement les films associés à chaque acteur
-	            acteurs.forEach(acteur -> {
-	                acteur.getFilms().size(); // Force l'initialisation de la collection
-	            });
+	         //   acteurs.forEach(acteur -> {
+	          //      acteur.getFilms().size(); // Force l'initialisation de la collection
+	         //   });
 
-	            film.setActeurs(acteurs); // Associer les acteurs au film (inverse)
+	         //   film.setActeurs(acteurs); // Associer les acteurs au film (inverse)
 
 	            // Sauvegarder les acteurs du film dans la base de données
-	            acteurDao.save(acteurs);
+	          //  acteurDao.save(acteurs);
 	            films.add(film);
 	        }
 	    });
@@ -65,95 +69,98 @@ public class Reader {
 	}
 
 
-*/
-	public List<Role> getRoles(String csvFile) {
-	    RoleDao roleDao = new RoleDaoImpl();
-	    List<Role> roles = new ArrayList<>();
+    public List<Role> getRoles(String csvFile) {
+        List<String> lignes = null;
+        List<Role> roles = new ArrayList<>();
 
-	    try {
-	        // Transformer les données du CSV en objets Role
-	        List<Role> rolesFromCsv = RoleTransformer.transformRoles(csvFile);
+        try {
+            lignes = FileUtils.readLines(new File(csvFile), "UTF-8");
+        } catch (IOException e) {
+            throw new RuntimeException("Fichier " + csvFile + " introuvable.", e);
+        }
 
-	        // Exemple d'ajout des rôles à la base de données
-	        for (Role role : rolesFromCsv) {
-	            roleDao.save((List<Role>) role);
-	            roles.add(role); // Ajouter le rôle à la liste des rôles sauvegardés
-	        }
+        // Supprimer l'en-tête
+        if (lignes != null && !lignes.isEmpty()) {
+            lignes.remove(0);
+        }
 
-	        // Exemple de recherche d'un rôle par ID
-	        Role role = roleDao.findById(1);
-	        if (role != null) {
-	            System.out.println("Rôle trouvé : " + role.getNom());
-	        }
+        FilmDao filmDAO = new FilmDAOImpl();
+        ActeurDao acteurDAO = new ActeurDAOImpl();
+        RoleDao roleDAO = new RoleDaoImpl();
 
-	        // Exemple de mise à jour d'un rôle
-	        if (!roles.isEmpty()) {
-	            Role firstRole = roles.get(0);
-	            firstRole.setNom("Nouveau nom du rôle");
-	            roleDao.update(firstRole);
-	        }
+        for (String ligne : lignes) {
+            try {
+                Role role = transformRole(ligne, acteurDAO, filmDAO);
+                if (role != null) {
+                    roles.add(role);
+                    roleDAO.save((List<Role>) role);
+                }
+            } catch (Exception e) {
+                System.err.println("Erreur lors du traitement de la ligne : " + ligne);
+                e.printStackTrace();
+            }
+        }
 
-	        // Exemple de suppression d'un rôle
-	        if (!roles.isEmpty()) {
-	            Role lastRole = roles.get(roles.size() - 1);
-	            roleDao.delete(lastRole);
-	        }
+        filmDAO.closeEntityManager();
+        acteurDAO.closeEntityManager();
+        roleDAO.closeEntityManager();
 
-	    } catch (Exception e) {
-	        // Gestion des exceptions
-	        e.printStackTrace();
-	    } finally {
-	        // Fermer l'EntityManagerFactory lorsque vous avez terminé
-	        ((RoleDaoImpl) roleDao).closeEntityManager();
-	    }
+        return roles;
+    }
 
-	    return roles;
-	}
-	public class RoleTransformer {
+    public static Role transformRole(String csvData, ActeurDao acteurDAO, FilmDao filmDAO) {
+    	 String[] values = csvData.split(";");
 
-	    public static List<Role> transformRoles(String csvData) {
-	        List<Role> roles = new ArrayList<>();
+	        // Création du rôle
+	        Role role = new Role();
+    	    try {
+    	        if (values.length < 3) {
+    	            throw new IllegalArgumentException("La ligne CSV ne contient pas suffisamment de colonnes : " + csvData);
+    	        }
 
-	        // Diviser les lignes par saut de ligne
-	        String[] lines = csvData.split("\\r?\\n");
+    	        String filmId = values[1].trim();
+    	        //String acteurIdImdb = values[0].trim(); // Utilisation de idImdb ici
+    	        String personnage = values[2].trim();
+    	        String[] nomEtPrenom = personnage.split(" ");
+    	        String nom = nomEtPrenom[0].trim();
+    	        String prenom = nomEtPrenom.length > 1 ? nomEtPrenom[1].trim() : "";
+    	        // Recherche de l'acteur par nom et prénom
+    	        Acteur acteur = acteurDao.findByNomAndPrenom(nom, prenom);
+    	        if (acteur == null) {
+    	            throw new RuntimeException("Acteur non trouvé en base de données pour : " + nom + " " + prenom);
+    	        }
+    	        role.setActeur(acteur);
 
-	        for (String line : lines) {
-	            // Diviser chaque ligne par le point-virgule
-	            String[] values = line.split(";");
+    	        // Recherche du film par son ID
+    	        Film film = filmDAO.find(filmId);
 
-	            if (values.length >= 3) {
-	                String filmId = values[0].trim();
-	                String acteurId = values[1].trim();
-	                String personnage = values[2].trim();
-
-	                // Créer un nouvel objet Role
-	                Role role = new Role();
+    	        if (film == null) {
+    	            throw new RuntimeException("Film non trouvé en base de données pour l'ID : " + filmId);
+    	        }
 
 
+    	        role.setActeur(acteur);
+    	        role.setNom(personnage);
 
-	                // Définir le personnage
-	                role.setNom(personnage);
+    	        return role;
 
-	                // Ajouter le rôle à la liste des rôles
-	                roles.add(role);
-	            }
-	        }
+    	    } catch (Exception e) {
+    	        throw new RuntimeException("Erreur lors de la transformation de la ligne CSV : " + csvData, e);
+    	    }
 
-	        return roles;
-	    }
-
-	}
-	/*
+    }
 	public static Film transformeLigneEnFilm(String ligneCsv) {
 		String[] morceaux = ligneCsv.split(";", -1);
 
 		// Initialisation des variables
+		String idImdb = null;
 		String titre = null;
 		String anneeSortieStr = null;
 		String langue = null;
 		String resume = null;
 
 		// Attribution des valeurs aux variables en fonction de l'index des colonnes
+		idImdb = morceaux[0];
 		if (morceaux.length > 2) {
 			anneeSortieStr = morceaux[2]; // L'année de sortie est dans la troisième colonne
 			// System.out.println(anneeSortieStr);
@@ -181,38 +188,43 @@ public class Reader {
 		film.setTitre(titre);
 		film.setLangue(langue);
 		film.setResume(resume);
+		film.setIdImdb(idImdb);
 
 		return film;
 	}
-*/
-	public static List<Acteur> getActeursDuFilm(String ligne) {
+
+	public List<Acteur> getActeursDuFilm(String csvFile) {
 	    List<Acteur> acteurs = new ArrayList<>();
 	    
-	    String[] valeurs = ligne.split(";");
-	    for (int i = 4; i < valeurs.length; i++) {
-	        String nomComplet = valeurs[i].trim();
-	        Acteur acteur = acteurDao.findOrCreateActeur(nomComplet);
-	        if (acteur != null) {
-	            // Initialize films collection if it's not initialized
-	            if (acteur.getFilms() == null) {
-	                acteur.setFilms(new ArrayList<>()); // Or initialize it as needed
-	            }
-	            Film film = null;
-	            // Perform operations with films collection
-	            acteur.getFilms().add(film);
-	             // Add films or perform other operations
-	            acteurs.add(acteur);
+	    try {
+	        List<String> lignes = FileUtils.readLines(new File(csvFile), "UTF-8");
+	        // Ignorer la première ligne si elle contient un en-tête
+	        if (!lignes.isEmpty()) {
+	            lignes.remove(0); // Supprimer l'en-tête si nécessaire
 	        }
+
+	        for (String ligne : lignes) {
+	            try {
+	                Acteur acteur = transformeLigneEnActeur(ligne);
+	                acteurs.add(acteur);
+	            } catch (Exception e) {
+	                System.err.println("Erreur lors du traitement de la ligne : " + ligne);
+	                e.printStackTrace();
+	            }
+	        }
+	    } catch (IOException e) {
+	        throw new ExceptionTech("Fichier " + csvFile + " introuvable.", e);
 	    }
-	    return acteurs;
-	}
+		return acteurs;
+	    	}
 
 	public static Acteur transformeLigneEnActeur(String ligneCsv) {
 		String[] values = ligneCsv.split(";");
+		String idImdb = values[0];
 		String nomComplet = values[1];
 		String[] nomEtPrenom = nomComplet.split(" ");
-		String nom = nomEtPrenom[0];
-		String prenom = nomEtPrenom.length > 1 ? nomEtPrenom[1] : ""; // Si un prénom est présent
+		String prenom = nomEtPrenom[0];
+		String nom = nomEtPrenom.length > 1 ? nomEtPrenom[1] : ""; // Si un nom est présent
 
 		// Vérification de la longueur de values
 		if (values.length < 6) {
@@ -252,6 +264,7 @@ public class Reader {
 		lieu.setPays(pays);
 
 		Acteur acteur = new Acteur();
+		acteur.setIdImdb(idImdb);
 		acteur.setNom(nom);
 		acteur.setPrenom(prenom);
 		acteur.setDateNaissance(dateNaissance);

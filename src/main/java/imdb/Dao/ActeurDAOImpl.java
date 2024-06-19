@@ -9,6 +9,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
 import imdb.entities.Acteur;
 import imdb.entities.Film;
 
@@ -77,7 +78,7 @@ public class ActeurDAOImpl implements ActeurDao {
         em.getTransaction().begin();
         try {
             for (Acteur acteur : acteurs) {
-                em.merge(acteur);
+                em.persist(acteur);
             }
             em.getTransaction().commit();
         } catch (Exception e) {
@@ -129,11 +130,34 @@ public class ActeurDAOImpl implements ActeurDao {
 	    return acteur;
 	}
 
-	@Override
-	public Acteur findOrCreateActeur(String nom, String prenom) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public void close() {
+        emf.close();
+    }
+
+    public Acteur find(String idImdb) {
+    	 TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a WHERE a.idImdb = :idImdb", Acteur.class);
+         query.setParameter("idImdb", idImdb);
+         List<Acteur> result = query.getResultList();
+         return result.isEmpty() ? null : result.get(0);
+     }
+    public Acteur findByNomAndPrenom(String nom, String prenom) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<Acteur> query = em.createQuery("SELECT a FROM Acteur a WHERE a.nom = :nom AND a.prenom = :prenom", Acteur.class);
+            query.setParameter("nom", nom);
+            query.setParameter("prenom", prenom);
+
+            List<Acteur> resultList = query.getResultList();
+            if (resultList.isEmpty()) {
+                return null;
+            } else {
+                // Retourner le premier acteur trouvé
+                return resultList.get(0);
+            }
+        } finally {
+            em.close();
+        }
+    }
 		
 	}
 

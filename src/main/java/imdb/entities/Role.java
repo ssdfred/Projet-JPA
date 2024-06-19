@@ -2,6 +2,11 @@ package imdb.entities;
 
 import jakarta.persistence.JoinColumn;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.mapping.Array;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,11 +22,10 @@ public class Role {
     private String nom;
 
     @ManyToOne
-    @JoinColumn(name = "id_film")
-    private Film film;
+
+    private Film film ;
     
     @ManyToOne
-    @JoinColumn(name = "id_acteur")
     private Acteur acteur;
     /** Constructeur
  	 * 
@@ -53,6 +57,14 @@ public class Role {
 	public void setNom(String nom) {
 		this.nom = nom;
 	}
+	/** Getter pour acteur
+	 * @return the acteur 
+	*/
+	
+	@Override
+	public String toString() {
+		return "Role [id=" + id + ", nom=" + nom + ", film=" + film + ", acteur=" + acteur + "]";
+	}
 	/** Getter pour film
 	 * @return the film 
 	*/
@@ -77,10 +89,7 @@ public class Role {
 	public void setActeur(Acteur acteur) {
 		this.acteur = acteur;
 	}
-	@Override
-	public String toString() {
-		return "Role [id=" + id + ", nom=" + nom + ", film=" + film + ", acteur=" + acteur + "]";
-	}
+
 
 
 }

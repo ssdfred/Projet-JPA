@@ -1,9 +1,12 @@
 package imdb.Dao;
 
+import imdb.entities.Acteur;
 import imdb.entities.Film;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
+
 import java.util.List;
 
 public class FilmDAOImpl implements FilmDao {
@@ -79,7 +82,12 @@ public class FilmDAOImpl implements FilmDao {
             em.close();
         }
     }
-
+    public Film find(String idImdb) {
+   	 TypedQuery<Film> query = em.createQuery("SELECT f FROM Film f WHERE f.idImdb = :idImdb", Film.class);
+     query.setParameter("idImdb", idImdb);
+     List<Film> result = query.getResultList();
+     return result.isEmpty() ? null : result.get(0);
+ }
     @Override
     public List<String> findActeursCommunsFilms(String film1, String film2) {
     	em = emf.createEntityManager();

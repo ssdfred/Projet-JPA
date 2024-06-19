@@ -24,7 +24,7 @@ public class Acteur {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-
+	private String idImdb;
 	@Column(length = 255)
 	private String nom;
 	private String prenom;
@@ -34,26 +34,29 @@ public class Acteur {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "lieuNaissance_id")
 	private Lieu lieuNaissance;
-	@OneToMany(mappedBy = "acteur", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Role> roles = new ArrayList<>();
-	@ManyToMany(mappedBy = "acteurs", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	private List<Film> films;
 
+	@OneToMany(mappedBy = "acteur", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Role> roles = new ArrayList<>();
+
+	@ManyToMany // (mappedBy = "acteurs", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinTable(name = "film_acteurs", joinColumns = @JoinColumn(name = "id_acteur"), inverseJoinColumns = @JoinColumn(name = "id_film"))
+	private List<Film> films;
 
 	// Constructeurs, getters et setters
 
 	public Acteur() {
 	}
 
-	  public void addRole(Role role) {
-	        roles.add(role);
-	        role.setActeur(this);
-	    }
+	public void addRole(Role role) {
+		roles.add(role);
+		role.setActeur(this);
+	}
 
-	    public void removeRole(Role role) {
-	        roles.remove(role);
-	        role.setActeur(null);
-	    }
+	public void removeRole(Role role) {
+		roles.remove(role);
+		role.setActeur(null);
+	}
+
 	public Acteur(String nom, String prenom, LocalDate dateNaissance, float taille, String url, Lieu lieuNaissance) {
 		this.nom = nom;
 		this.prenom = prenom;
@@ -168,18 +171,40 @@ public class Acteur {
 		this.films = films;
 	}
 
-	/** Getter pour roles
-	 * @return the roles 
-	*/
+	/**
+	 * Getter pour roles
+	 * 
+	 * @return the roles
+	 */
 	public List<Role> getRoles() {
 		return roles;
 	}
 
-	/** Setter pour roles
+	/**
+	 * Setter pour roles
+	 * 
 	 * @param roles
 	 */
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
+	}
+
+	/**
+	 * Getter pour idImdb
+	 * 
+	 * @return the idImdb
+	 */
+	public String getIdImdb() {
+		return idImdb;
+	}
+
+	/**
+	 * Setter pour idImdb
+	 * 
+	 * @param idImdb
+	 */
+	public void setIdImdb(String idImdb) {
+		this.idImdb = idImdb;
 	}
 
 }
